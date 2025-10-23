@@ -33,7 +33,11 @@ public class Projectile : MonoBehaviour
             animator.SetTrigger("projectiletouched");
             Speed = RamdomSpeed;
         }
-        
+        if(other.gameObject.tag == "Barrier" )
+        {
+            Debug.Log("projectile hit the Barrier!");
+            Destroy(gameObject);
+        }
     }
     public void movingend()
     {

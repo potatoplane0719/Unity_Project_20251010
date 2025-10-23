@@ -19,12 +19,14 @@ public class test : MonoBehaviour
     private float timer = 0f;
     public PlayerAttackBox playerAttackBox;
     public Transform AttackOffset;
-    public Transform BlockOffset; 
+    public Transform BlockOffset;
     public bool canMove = true;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] float movespeed = 3f;
     public int Face = 1;
-
+    public int maxHealth = 100;
+    public int currentHealth;
+    public HealthBar healthBar;
     void Start()
     {
         Mattack = GetComponent<attack>();
@@ -35,6 +37,8 @@ public class test : MonoBehaviour
         {
 
         }
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
     }
 
     // Update is called once per frame
@@ -42,20 +46,20 @@ public class test : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.I) && canMove && !isMovingX && !gethit && !isJumping && !Mattack.isAttacking)
         {
-            
+
             animator.SetTrigger("block");
             Debug.Log("Block");
-            Instantiate(blockedscript, BlockOffset.position , BlockOffset.rotation);
+            Instantiate(blockedscript, BlockOffset.position, BlockOffset.rotation);
             isBloking = true;
         }
         if (!isMovingX)
+        {
+            if (animator != null)
             {
-                if (animator != null)
-                {
-                    animator.SetBool("Walk", false);
-                    animator.SetBool("Backward", false);
-                }
+                animator.SetBool("Walk", false);
+                animator.SetBool("Backward", false);
             }
+        }
         if (!isJumping)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -168,7 +172,7 @@ public class test : MonoBehaviour
         gethit = true;
         //Debug.Log("player get hit!");
         GetComponent<SpriteRenderer>().color = Color.red; // or any Color
-
+        TakeDamage(10);
     }
     public void gethitend()
     {
@@ -224,8 +228,8 @@ public class test : MonoBehaviour
     {
         canMove = false;
         isBloking = true;
-        
-        
+
+
     }
     public void BlockEnd()
     {
@@ -235,5 +239,10 @@ public class test : MonoBehaviour
     {
         gethit = false;
         canMove = true;
+    }
+    void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        healthBar.SetHealth(currentHealth);
     }
 }
